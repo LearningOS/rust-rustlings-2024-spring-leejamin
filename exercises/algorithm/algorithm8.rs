@@ -55,6 +55,7 @@ impl<T> Default for Queue<T> {
 pub struct myStack<T>
 {
 	//TODO
+    size: usize,
 	q1:Queue<T>,
 	q2:Queue<T>
 }
@@ -62,20 +63,39 @@ impl<T> myStack<T> {
     pub fn new() -> Self {
         Self {
 			//TODO
+            size: 0,
 			q1:Queue::<T>::new(),
 			q2:Queue::<T>::new()
         }
     }
     pub fn push(&mut self, elem: T) {
         //TODO
+        self.size += 1;
+        let mut q = &mut self.q1;
+        if q.is_empty() {
+            q = &mut self.q2;
+        } 
+        q.enqueue(elem);
     }
     pub fn pop(&mut self) -> Result<T, &str> {
         //TODO
+        let mut q = &mut self.q1;
+        let mut another = &mut self.q2;
+        if q.is_empty() {
+            (q, another) = (another, q);
+        }
+        while q.size() > 1 {
+            let ele = q.dequeue().unwrap();
+            another.enqueue(ele);
+        }
+        if q.size() == 1 {
+            self.size -= 1;
+            return q.dequeue();
+        }
 		Err("Stack is empty")
     }
     pub fn is_empty(&self) -> bool {
-		//TODO
-        true
+		self.size == 0
     }
 }
 

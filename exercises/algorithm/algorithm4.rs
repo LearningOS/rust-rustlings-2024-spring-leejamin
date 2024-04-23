@@ -51,12 +51,43 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
+        let mut target = &mut self.root;
+        loop {
+            match target {
+                None => break,
+                Some(tmp) => {
+                    if tmp.value == value {
+                        return;
+                    } else if tmp.value > value {
+                        target = &mut tmp.left;
+                    } else {
+                        target = &mut tmp.right;
+                    }
+                }
+            }
+        };
+        *target = Some(Box::new(TreeNode::new(value)));
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
         //TODO
-        true
+        let mut target = &self.root;
+        loop {
+            match target {
+                None => return false,
+                Some(val) => {
+                    if val.value == value {
+                        return true;
+                    } else if val.value > value {
+                        target = &val.left;
+                    } else {
+                        target = &val.right;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 

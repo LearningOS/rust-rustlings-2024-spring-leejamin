@@ -44,6 +44,24 @@ impl Default for Person {
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        let mut person = Person::default();
+        let p: Vec<&str> = s.split(",").collect();
+        if p.len() != 2 {
+            return person;
+        } else if p[0].is_empty() {
+            return person;
+        }
+        let age = p[1].parse::<usize>().unwrap_or_else(|_| {
+            return 0;
+        });
+        
+        if age > 0 {
+            person = Person{
+                name: p[0].to_string(),
+                age
+            };
+        }
+        return person;
     }
 }
 

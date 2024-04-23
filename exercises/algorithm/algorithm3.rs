@@ -5,8 +5,40 @@
 */
 // I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
+fn sort<T: Copy + std::cmp::PartialOrd>(array: &mut [T]){
 	//TODO
+    if array.len() <= 1 {
+        return;
+    }
+    let mut tail = array.len() / 2 - 1;
+    while tail >= 0 {
+        downAdjust(array, tail, array.len());
+        if(tail == 0) {
+            break;
+        }
+        tail -= 1;
+    }
+    
+    for i in 1..(array.len() - 1) {
+        (array[0], array[array.len() - i]) = (array[array.len() - i], array[0]);
+        downAdjust(array, 0, array.len() - i)
+    }
+    (array[0], array[1]) = (array[1], array[0]);
+}
+
+fn downAdjust<T: Copy + std::cmp::PartialOrd>(array: &mut[T], mut parent: usize, len: usize) {
+    let mut child = parent * 2 + 1;
+    while child < len {
+        if child + 1 < len && array[child+1] > array[child] {
+            child += 1;
+        }
+        if array[child] <= array[parent] {
+            break;
+        }
+        (array[child], array[parent]) = (array[parent], array[child]);
+        parent = child;
+        child = parent * 2 + 1;
+    }
 }
 #[cfg(test)]
 mod tests {

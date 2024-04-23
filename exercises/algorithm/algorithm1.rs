@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: Clone+std::cmp::PartialOrd> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: Clone+std::cmp::PartialOrd> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -56,11 +56,11 @@ impl<T> LinkedList<T> {
         self.length += 1;
     }
 
-    pub fn get(&mut self, index: i32) -> Option<&T> {
+    pub fn get(& self, index: i32) -> Option<&T> {
         self.get_ith_node(self.start, index)
     }
 
-    fn get_ith_node(&mut self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
+    fn get_ith_node(& self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
         match node {
             None => None,
             Some(next_ptr) => match index {
@@ -71,16 +71,37 @@ impl<T> LinkedList<T> {
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut list = LinkedList::default();
+        let mut i_a = 0; 
+        let mut i_b = 0;
+        while i_a < list_a.length && i_b < list_b.length {
+            let v_a = list_a.get(i_a as i32).unwrap();
+            let v_b = list_b.get(i_b as i32).unwrap();
+            
+            if *v_a < *v_b {
+                list.add((*v_a).clone());
+                i_a += 1;
+            } else {
+                list.add((*v_b).clone());
+                i_b += 1;
+            }
+        };
+        while i_a < list_a.length {
+            let v_a = list_a.get(i_a as i32).unwrap();
+            list.add((*v_a).clone());
+            i_a += 1;
         }
+        while i_b < list_b.length {
+            let v_b = list_b.get(i_b as i32).unwrap();
+            list.add((*v_b).clone());
+            i_b += 1;
+        }
+
+        list
 	}
 }
 
-impl<T> Display for LinkedList<T>
+impl<T: std::cmp::PartialOrd> Display for LinkedList<T>
 where
     T: Display,
 {

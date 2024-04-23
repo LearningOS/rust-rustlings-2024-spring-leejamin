@@ -31,6 +31,28 @@ impl Graph {
 		//TODO
 
         let mut visit_order = vec![];
+        visit_order.push(start);
+
+        let mut nodes = self.adj[start].clone();
+        let mut i = 0;
+        loop {
+            if i >= nodes.len() {
+                break;
+            }
+            if visit_order.contains(&nodes[i]) {
+                i += 1;
+                continue;
+            }
+            visit_order.push(nodes[i]);
+            for ele in &self.adj[nodes[i]]{
+                if !nodes.contains(&ele) {
+                    nodes.push(*ele);
+                } 
+            }
+            
+            i += 1;
+        }
+
         visit_order
     }
 }
